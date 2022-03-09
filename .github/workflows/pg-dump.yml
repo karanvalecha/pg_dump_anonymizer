@@ -18,7 +18,7 @@ jobs:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    container: node:10.18-jessie
+    container: node:latest
 
     # Service containers to run with `container-job`
     services:
@@ -44,7 +44,8 @@ jobs:
       # Runs a single command using the runners shell
       - run: npm --prefix ./pg-anonymizer install ./pg-anonymizer
       - name: Run the PG anonymizer
-        run: ./pg-anonymizer/bin/run ::add-mask::${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
+        run: |
+          echo "./pg-anonymizer/bin/run ::add-mask::${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping"
       - name: Use the Upload Artifact GitHub Action
         uses: actions/upload-artifact@v2
         with: 
