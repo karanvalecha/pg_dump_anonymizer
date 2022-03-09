@@ -44,6 +44,7 @@ jobs:
       # Runs a single command using the runners shell
       - run: npm --prefix ./pg-anonymizer install ./pg-anonymizer
       - run: mkdir downloads
+      - run: pg_dump --help
       - name: Run the PG anonymizer
         run: ./pg-anonymizer/bin/run ${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
       - name: Use the Upload Artifact GitHub Action
