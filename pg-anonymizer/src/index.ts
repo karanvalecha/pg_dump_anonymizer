@@ -71,7 +71,7 @@ class PgAnonymizer extends Command {
       : null;
 
     console.error("Launching pg_dump");
-    const pg = spawn("pg_dump", [args.database]);
+    const pg = spawn("pg_dump", [args.database, "--no-privileges", "--no-owner"]);
     pg.on("exit", function (code) {
       if (code != 0) {
         dieAndLog("pg_dump command failed with exit code", code);
