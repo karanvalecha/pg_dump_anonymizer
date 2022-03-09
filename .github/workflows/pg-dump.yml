@@ -40,17 +40,22 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - run: npm --prefix ./pg-anonymizer install ./pg-anonymizer
-      - run: mkdir downloads
       - run: |
           apt-get update
           apt-get install --yes --no-install-recommends postgresql-client
-      - name: Run the PG anonymizer
-        run: ./pg-anonymizer/bin/run ${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
-      - name: Use the Upload Artifact GitHub Action
-        uses: actions/upload-artifact@v2
+
+      - run: mkdir downloads
+
+      # Runs a single command using the runners shell
+      - run: npm --prefix ./pg-anonymizer install ./pg-anonymizer
+
+      - name: PG data -> fetch -> anonymize -> export
+        run: ./pg-anonymizer/bin/run ::add-mask::${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
+
+      - name: generate artifact name with current datetime
+        run: echo ARTIFACT_NAME=pg-anon-dump-$(date +'%Y-%m-%dT%H:%M') >> $GITHUB_ENV
+
+      - uses: actions/upload-artifact@v2
         with: 
-          name: pg-anon-dump-$(date +'%Y-%m-%dT%H:%M')
-          path: downloads
+          name: ${{ env.ARTIFACT_NAME }}
+          path: downloads/dump.sql
