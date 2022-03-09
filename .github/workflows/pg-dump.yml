@@ -17,6 +17,14 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    container: node:latest
+
+    # service containers to run with `postgres-job`
+    services:
+      # label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -24,8 +32,9 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
+      - run: npm --prefix ./pg-anonymizer install ./pg-anonymizer
       - name: Run the PG anonymizer
-        run: ./pg-anonymizer/bin/run ::add-mask::${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
+        run: ./pg-anonymizer/bin/run ${{ ::add-mask::github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
       - name: Use the Upload Artifact GitHub Action
         uses: actions/upload-artifact@v2
         with: 
