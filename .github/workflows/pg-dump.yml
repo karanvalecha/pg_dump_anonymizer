@@ -14,7 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  anonymize_pg_dump:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
@@ -44,8 +44,7 @@ jobs:
       # Runs a single command using the runners shell
       - run: npm --prefix ./pg-anonymizer install ./pg-anonymizer
       - name: Run the PG anonymizer
-        run: |
-          echo "./pg-anonymizer/bin/run ::add-mask::${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping"
+        run: ./pg-anonymizer/bin/run ${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
       - name: Use the Upload Artifact GitHub Action
         uses: actions/upload-artifact@v2
         with: 
