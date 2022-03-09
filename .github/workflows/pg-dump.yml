@@ -48,7 +48,7 @@ jobs:
           apt-get update
           apt-get install --yes --no-install-recommends postgresql-client
       - name: Run the PG anonymizer
-        run: ./pg-anonymizer/bin/run ::add-mask::${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
+        run: ./pg-anonymizer/bin/run ${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
       - name: Use the Upload Artifact GitHub Action
         uses: actions/upload-artifact@v2
         with: 
