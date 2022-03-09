@@ -18,7 +18,7 @@ jobs:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    container: node:latest
+    container: node:14.8
 
     # Service containers to run with `container-job`
     services:
@@ -48,9 +48,9 @@ jobs:
           apt-get update
           apt-get install --yes --no-install-recommends postgresql-client
       - name: Run the PG anonymizer
-        run: ./pg-anonymizer/bin/run ${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
+        run: ./pg-anonymizer/bin/run ::add-mask::${{ github.event.inputs.pg_connection_url }} -o downloads/dump.sql --configFile ./sanitize_mapping
       - name: Use the Upload Artifact GitHub Action
         uses: actions/upload-artifact@v2
         with: 
-          name: assets-for-download
+          name: pg-anon-dump-$(date +'%Y-%m-%dT%H:%M')
           path: downloads
